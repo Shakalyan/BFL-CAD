@@ -32,6 +32,8 @@ namespace BFCAD {
 
         BooleanFunction(std::unique_ptr<BooleanFunction> left_bf, std::unique_ptr<BooleanFunction> right_bf, Operation operation);
 
+        BooleanFunction(BooleanFunction *left_bf, BooleanFunction *right_bf, Operation operation);
+
         bool calculate(std::unordered_map<std::string, bool> const& parameters) const;
 
         std::string getTruthTable() const;

@@ -17,6 +17,15 @@ BFCAD::BooleanFunction::BooleanFunction(std::unique_ptr<BooleanFunction> left_bf
     this->parameters.insert(this->right_bf->parameters.begin(), this->right_bf->parameters.end());
 }
 
+BFCAD::BooleanFunction::BooleanFunction(BooleanFunction *left_bf, BooleanFunction *right_bf, Operation operation)
+{
+    this->left_bf = std::unique_ptr<BooleanFunction>(left_bf);
+    this->right_bf = std::unique_ptr<BooleanFunction>(right_bf);
+    this->operation = operation;
+    this->parameters.insert(this->left_bf->parameters.begin(), this->left_bf->parameters.end());
+    this->parameters.insert(this->right_bf->parameters.begin(), this->right_bf->parameters.end());    
+}
+
 bool BFCAD::BooleanFunction::calculate(std::unordered_map<std::string, bool> const& parameters) const 
 {
     if (this->left_bf == NULL && this->right_bf == NULL) {
