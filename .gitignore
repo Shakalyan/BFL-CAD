@@ -1,5 +1,6 @@
 .vscode
 .antlr
-generate/
+generated/
 build/
 *.o
+test.txt
