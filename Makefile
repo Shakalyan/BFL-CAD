@@ -10,8 +10,8 @@ ALGC_SOURCES=bf.cpp
 
 ANTLR4_GENERTD=$(BFLT_PATH)/generated
 ANTLR4_GRAMMAR=$(BFLT_PATH)/BFL.g4
-ANTLR4_HEADERS=/home/shakalyan/programs/antlr4/run/usr/local/include/antlr4-runtime/
-ANTLR4_SO_PATH=/home/shakalyan/programs/antlr4/run/usr/local/lib
+ANTLR4_HEADERS=lib/antlr4-4.13.2/include/antlr4-runtime/
+ANTLR4_SO_PATH=lib/antlr4-4.13.2/
 ANTLR4_SO=antlr4-runtime
 
 SOURCES=src/main.cpp $(addprefix $(ALGC_PATH)/, $(ALGC_SOURCES)) $(addprefix $(BFLT_PATH)/, $(BFLT_SOURCES)) $(wildcard $(ANTLR4_GENERTD)/*.cpp)
@@ -39,7 +39,4 @@ clean:
 	@-rm $(OBJECTS)
 
 tst:
-	@echo $(wildcard $(ANTLR4_GENERTD)/*.cpp)
-	@echo $(BFLT_SOURCES)
-	@echo $(SOURCES)
-	@echo $(OBJECTS)
+	@echo $(basename $(ANTLR4_SO:lib%=%))
