@@ -38,12 +38,19 @@ public:
 
     virtual std::any visitParens(BFLParser::ParensContext *ctx) override {
         std::cout << "visit parens\n";
-        return visit(ctx->expr());
+        BFCAD::BooleanFunction *bf = std::any_cast<BFCAD::BooleanFunction*>(visit(ctx->expr()));
+        if (static_cast<bool>(ctx->NOT())) {
+            bf->invert();
+        }
+        return bf;
     }
 
     virtual std::any visitId(BFLParser::IdContext *ctx) override {
         std::string id = ctx->ID()->getText();
         std::cout << "visit id: " << id << "\n";
+        if (static_cast<bool>(ctx->NOT())) {
+            return new BFCAD::BooleanFunction(id, true);
+        }
         return new BFCAD::BooleanFunction(id);
     }
 

@@ -9,8 +9,8 @@ stat: blk=(IN|BF|OUT) '{' ID (',' ID)* '};' # block
     ;
 
 expr: expr op=(AND|OR|XOR) expr # operation
-    | '(' expr ')'              # parens
-    | ID                        # id
+    | NOT? '(' expr ')'         # parens
+    | NOT? ID                   # id
     ;
 
 IN: 'IN';

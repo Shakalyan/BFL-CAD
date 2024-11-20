@@ -11,8 +11,7 @@ namespace BFCAD {
     enum class Operation {
         AND,
         OR,
-        XOR,
-        NOT
+        XOR
     };
 
     class BooleanFunction {
@@ -21,6 +20,7 @@ namespace BFCAD {
         std::unique_ptr<BooleanFunction> right_bf;
         Operation operation;
         std::set<std::string> parameters;
+        bool is_inverted;
 
     public:
         BooleanFunction() = delete;
@@ -28,11 +28,20 @@ namespace BFCAD {
         BooleanFunction& operator=(BooleanFunction const&) = delete;
 
 
-        BooleanFunction(std::string const& parameter_name);
+        BooleanFunction(std::string const& parameter_name, 
+                        bool is_inverted = false);
 
-        BooleanFunction(std::unique_ptr<BooleanFunction> left_bf, std::unique_ptr<BooleanFunction> right_bf, Operation operation);
+        BooleanFunction(std::unique_ptr<BooleanFunction> left_bf, 
+                        std::unique_ptr<BooleanFunction> right_bf, 
+                        Operation operation, 
+                        bool is_inverted = false);
 
-        BooleanFunction(BooleanFunction *left_bf, BooleanFunction *right_bf, Operation operation);
+        BooleanFunction(BooleanFunction *left_bf, 
+                        BooleanFunction *right_bf, 
+                        Operation operation, 
+                        bool is_inverted = false);
+
+        void invert();
 
         bool calculate(std::unordered_map<std::string, bool> const& parameters) const;
 
