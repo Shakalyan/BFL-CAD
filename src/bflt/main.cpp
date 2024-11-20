@@ -1,4 +1,5 @@
 #include <iostream>
+#include <unordered_set>
 #include <unordered_map>
 #include "antlr4-runtime.h"
 #include "tree/ParseTree.h"
@@ -10,7 +11,11 @@
 #include "../bf.h"
 
 class Visitor : public BFLBaseVisitor {
+private:
     BFCAD::BooleanFunction *res_bf;
+    std::unordered_set<std::string> in_ids;
+    std::unordered_map<std::string, BFCAD::BooleanFunction*> bf_ids;
+    std::string out_id;
 
 public:
 
@@ -23,16 +28,37 @@ public:
     virtual std::any visitBlock(BFLParser::BlockContext *ctx) override {
         std::cout << "visit block ";
         std::cout << ctx->blk->toString() << std::endl;
-        for (auto id : ctx->ID())
-            std::cout << id->toString() << std::endl;
+        switch (ctx->blk->getType()) {
+            case BFLParser::INS:
+                for (auto id : ctx->ID()) in_ids.insert(id->getText());
+                break;
+            case BFLParser::BFS:
+                for (auto id : ctx->ID()) bf_ids[id->getText()] = nullptr;
+                break;
+            case BFLParser::OUT:
+                out_id = ctx->ID()[0]->getText();
+                break;
+        }
+        // for (auto id : ctx->ID())
+        //     std::cout << id->toString() << std::endl;
         return visitChildren(ctx);
     }
 
     virtual std::any visitAssign(BFLParser::AssignContext *ctx) override {
         std::cout << "visit assign\n";
-        if (ctx->ID()[0].getText() == "RES") {
+        std::string id = ctx->ID()[0].getText();
+        if (id == out_id) {
             res_bf = std::any_cast<BFCAD::BooleanFunction*>(visit(ctx->expr()));
+            return 0;
         }
+
+        if (bf_ids.find(id) != bf_ids.end()) {
+            bf_ids[id] = std::any_cast<BFCAD::BooleanFunction*>(visit(ctx->expr()));
+        } else {
+            std::cout << "BF NOT FOUND EXCEPTION\n";
+            return 0;
+        }
+
         return 0;
     }
 
@@ -48,10 +74,22 @@ public:
     virtual std::any visitId(BFLParser::IdContext *ctx) override {
         std::string id = ctx->ID()->getText();
         std::cout << "visit id: " << id << "\n";
-        if (static_cast<bool>(ctx->NOT())) {
-            return new BFCAD::BooleanFunction(id, true);
+
+        BFCAD::BooleanFunction *bf = nullptr;
+        if (this->in_ids.find(id) != this->in_ids.end()) {
+            bf = new BFCAD::BooleanFunction(id);
+        } 
+        else if (this->bf_ids.find(id) != this->bf_ids.end()) {
+            bf = this->bf_ids[id];
         }
-        return new BFCAD::BooleanFunction(id);
+        else {
+            std::cout << "ID NOT FOUND EXCEPTION\n";
+        }
+
+        if (static_cast<bool>(ctx->NOT())) {
+            bf->invert();
+        }
+        return bf;
     }
 
     virtual std::any visitOperation(BFLParser::OperationContext *ctx) override {

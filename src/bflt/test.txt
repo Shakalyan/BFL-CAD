@@ -1,1 +1,15 @@
-RES = !(X1 || (X2)) ^ !X3;
+INS {
+    X1, X2, X3
+};
+
+BFS {
+    X1_OR_X2
+};
+
+OUT {
+    RESSS
+};
+
+
+X1_OR_X2 = !(X1 || X2);
+RESSS = !X1_OR_X2 && X3;

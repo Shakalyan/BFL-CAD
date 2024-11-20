@@ -4,7 +4,7 @@ prog: stat+
     | EOF
     ;
 
-stat: blk=(IN|BF|OUT) '{' ID (',' ID)* '};' # block
+stat: blk=(INS|BFS|OUT) '{' ID (',' ID)* '};' # block
     | ID '=' expr ';'                       # assign
     ;
 
@@ -13,8 +13,8 @@ expr: expr op=(AND|OR|XOR) expr # operation
     | NOT? ID                   # id
     ;
 
-IN: 'IN';
-BF: 'BF';
+INS: 'INS';
+BFS: 'BFS';
 OUT: 'OUT';
 
 AND: '&&';
