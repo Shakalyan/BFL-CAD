@@ -4,3 +4,4 @@ generated/
 build/
 *.o
 test.txt
+log.txt
