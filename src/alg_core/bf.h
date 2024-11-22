@@ -45,9 +45,9 @@ namespace BFCAD {
 
         bool calculate(std::unordered_map<std::string, bool> const& parameters) const;
 
-        std::string getTruthTable() const;
+        std::string get_truth_table() const;
 
-        void printParameters() const;
+        void print_parameters() const;
 
     };
 

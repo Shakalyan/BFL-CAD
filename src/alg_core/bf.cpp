@@ -1,5 +1,8 @@
 #include "bf.h"
+#include "logger.h"
+
 #include <iostream>
+
 
 BFCAD::BooleanFunction::BooleanFunction(std::string const& parameter_name, 
                                         bool is_inverted) 
@@ -48,8 +51,6 @@ bool BFCAD::BooleanFunction::calculate(std::unordered_map<std::string, bool> con
     bool left_value = this->left_bf->calculate(parameters);
     bool right_value = this->right_bf->calculate(parameters);
 
-    //std::cout << this->is_inverted << std::endl;
-
     switch (this->operation) {
         case Operation::AND:
             return (left_value && right_value) ^ this->is_inverted;
@@ -61,7 +62,7 @@ bool BFCAD::BooleanFunction::calculate(std::unordered_map<std::string, bool> con
     return 0;
 }
 
-std::string BFCAD::BooleanFunction::getTruthTable() const
+std::string BFCAD::BooleanFunction::get_truth_table() const
 {
     std::string result;
     std::unordered_map<std::string, bool> params;
@@ -92,9 +93,9 @@ std::string BFCAD::BooleanFunction::getTruthTable() const
     return result;
 }
 
-void BFCAD::BooleanFunction::printParameters() const
+void BFCAD::BooleanFunction::print_parameters() const
 {
     for (auto param : this->parameters) {
-        std::cout << param << std::endl;
+        BFCAD_log(param);
     }
 }

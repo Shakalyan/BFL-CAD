@@ -1,16 +1,18 @@
 #include "bflt_visitor.h"
+#include "bflt_exception.h"
+#include "logger.h"
 
 std::any BFCAD::BFLTVisitor::visitProg(BFLParser::ProgContext *ctx) 
 {
-    std::cout << "start" << std::endl;
+    BFCAD_log("============ start parsing BFL input ============");
     visitChildren(ctx);
+    BFCAD_log("============= end parsing BFL input =============");
     return this->res_bf;
 }
 
 std::any BFCAD::BFLTVisitor::visitBlock(BFLParser::BlockContext *ctx) 
 {
-    std::cout << "visit block ";
-    std::cout << ctx->blk->toString() << std::endl;
+    BFCAD_log("visit block: ", ctx->blk->getText().c_str());
     switch (ctx->blk->getType()) {
         case BFLParser::INS:
             for (auto id : ctx->ID()) in_ids.insert(id->getText());
@@ -22,15 +24,13 @@ std::any BFCAD::BFLTVisitor::visitBlock(BFLParser::BlockContext *ctx)
             out_id = ctx->ID()[0]->getText();
             break;
     }
-    // for (auto id : ctx->ID())
-    //     std::cout << id->toString() << std::endl;
     return visitChildren(ctx);
 }
 
 std::any BFCAD::BFLTVisitor::visitAssign(BFLParser::AssignContext *ctx) 
 {
-    std::cout << "visit assign\n";
     std::string id = ctx->ID()[0].getText();
+    BFCAD_log("visit assign: ", id);
     if (id == out_id) {
         res_bf = std::any_cast<BFCAD::BooleanFunction*>(visit(ctx->expr()));
         return 0;
@@ -38,9 +38,14 @@ std::any BFCAD::BFLTVisitor::visitAssign(BFLParser::AssignContext *ctx)
 
     if (bf_ids.find(id) != bf_ids.end()) {
         bf_ids[id] = std::any_cast<BFCAD::BooleanFunction*>(visit(ctx->expr()));
-    } else {
-        std::cout << "BF NOT FOUND EXCEPTION\n";
-        return 0;
+    } 
+    else if (in_ids.find(id) != in_ids.end()) {
+        throw BFCAD::BFLTException(BFCAD::BFLTExceptionType::INS_ID_ASSIGN,
+                                   "assign is not applicable to INS ID(%s)", id.c_str());
+    }
+    else {
+        throw BFCAD::BFLTException(BFCAD::BFLTExceptionType::ID_NOT_FOUND,
+                                   "ID(%s) not found", id.c_str());
     }
 
     return 0;
@@ -48,7 +53,7 @@ std::any BFCAD::BFLTVisitor::visitAssign(BFLParser::AssignContext *ctx)
 
 std::any BFCAD::BFLTVisitor::visitParens(BFLParser::ParensContext *ctx) 
 {
-    std::cout << "visit parens\n";
+    BFCAD_log("visit parens");
     BFCAD::BooleanFunction *bf = std::any_cast<BFCAD::BooleanFunction*>(visit(ctx->expr()));
     if (static_cast<bool>(ctx->NOT())) {
         bf->invert();
@@ -59,7 +64,7 @@ std::any BFCAD::BFLTVisitor::visitParens(BFLParser::ParensContext *ctx)
 std::any BFCAD::BFLTVisitor::visitId(BFLParser::IdContext *ctx) 
 {
     std::string id = ctx->ID()->getText();
-    std::cout << "visit id: " << id << "\n";
+    BFCAD_log("visit id: ", id);
 
     BFCAD::BooleanFunction *bf = nullptr;
     if (this->in_ids.find(id) != this->in_ids.end()) {
@@ -80,10 +85,9 @@ std::any BFCAD::BFLTVisitor::visitId(BFLParser::IdContext *ctx)
 
 std::any BFCAD::BFLTVisitor::visitOperation(BFLParser::OperationContext *ctx) 
 {
-    std::cout << "visit operation\n";
+    BFCAD_log("visit operation: ", ctx->op->getText());
     BFCAD::BooleanFunction *left_bf = std::any_cast<BFCAD::BooleanFunction*>(visit(ctx->expr(0)));
     BFCAD::BooleanFunction *right_bf = std::any_cast<BFCAD::BooleanFunction*>(visit(ctx->expr(1)));
-    std::cout << "visit operation any cast ok\n";
     BFCAD::Operation op;
     switch (ctx->op->getType()) {
         case BFLParser::AND:

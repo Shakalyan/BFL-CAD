@@ -11,6 +11,9 @@ ALGC_SOURCES=bf.cpp
 LGGR_PATH=src/logger
 LGGR_SOURCES=logger.cpp
 
+CMMN_PATH=src/common
+CMMN_SOURCES=
+
 ANTLR4_GENERTD=$(BFLT_PATH)/generated
 ANTLR4_GRAMMAR=$(BFLT_PATH)/BFL.g4
 ANTLR4_HEADERS=lib/antlr4-4.13.2/include/antlr4-runtime/
@@ -18,9 +21,9 @@ ANTLR4_SO_PATH=lib/antlr4-4.13.2/
 ANTLR4_SO=antlr4-runtime
 
 SOURCES=src/main.cpp $(addprefix $(ALGC_PATH)/, $(ALGC_SOURCES)) $(addprefix $(BFLT_PATH)/, $(BFLT_SOURCES)) \
-		$(addprefix $(LGGR_PATH)/, $(LGGR_SOURCES)) $(wildcard $(ANTLR4_GENERTD)/*.cpp)
+		$(addprefix $(LGGR_PATH)/, $(LGGR_SOURCES)) $(addprefix $(CMMN_PATH)/, $(CMMN_SOURCES)) $(wildcard $(ANTLR4_GENERTD)/*.cpp)
 OBJECTS=$(SOURCES:cpp=o)
-HEADERS=-I $(ANTLR4_HEADERS) -I $(BFLT_PATH) -I $(ALGC_PATH) -I $(LGGR_PATH)
+HEADERS=-I $(ANTLR4_HEADERS) -I $(BFLT_PATH) -I $(ALGC_PATH) -I $(LGGR_PATH) -I $(CMMN_PATH)
 LIBS=-L $(ANTLR4_SO_PATH) -l$(ANTLR4_SO)
 CC=g++
 
