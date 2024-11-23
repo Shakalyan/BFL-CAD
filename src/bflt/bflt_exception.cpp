@@ -2,16 +2,15 @@
 #include "formatter.h"
 #include <cstring>
 
-BFCAD::BFLTException::BFLTException(BFLTExceptionType err_type, std::string const& fmt, ...)
+BFCAD::BFLTException::BFLTException(BFLTExceptionType err_type, std::string const& err_message)
 {
     this->err_type = err_type;
-    std::memset(this->err_str, 0, 256);
-    BFCAD_fmt(this->err_str, sizeof(this->err_str), fmt);
+    this->err_message = err_message;
 }
 
-const char* BFCAD::BFLTException::what() const
+std::string BFCAD::BFLTException::what() const
 {
-    return this->err_str;
+    return this->err_message;
 }
 
 BFCAD::BFLTExceptionType BFCAD::BFLTException::get_type() const

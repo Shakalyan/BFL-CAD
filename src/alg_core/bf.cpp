@@ -96,6 +96,6 @@ std::string BFCAD::BooleanFunction::get_truth_table() const
 void BFCAD::BooleanFunction::print_parameters() const
 {
     for (auto param : this->parameters) {
-        BFCAD_log(param);
+        BFCAD::Logger::log(std::string(param));
     }
 }

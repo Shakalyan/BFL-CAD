@@ -12,16 +12,16 @@ namespace BFCAD {
     class BFLTException {
     private:
         BFLTExceptionType err_type;
-        char err_str[256];
+        std::string err_message;
 
     public:
 
         BFLTException(BFLTException const&) = delete;
         BFLTException& operator=(BFLTException const&) = delete;
 
-        BFLTException(BFLTExceptionType err_type, std::string const& fmt, ...);
+        BFLTException(BFLTExceptionType err_type, std::string const& err_message);
 
-        const char* what() const;
+        std::string what() const;
 
         BFLTExceptionType get_type() const; 
 
