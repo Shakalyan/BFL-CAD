@@ -3,6 +3,62 @@
 
 #include <iostream>
 
+bool BFCAD::Conjunct::operator==(Conjunct const& conjunct) const
+{
+    if (this->members.size() != conjunct.members.size())
+        return false;
+    for (auto const& mmb : this->members) {
+        auto it = conjunct.members.find(mmb.first);
+        if (it == conjunct.members.end())
+            return false;
+        if (mmb.second != it->second)
+            return false;
+    }
+    return true;
+}
+
+std::string BFCAD::Conjunct::toString() const
+{
+    std::string res;
+    for (auto const& mmb : this->members) {
+        if (!mmb.second)
+            res.append("!");
+        res.append(mmb.first);
+    }
+    return std::move(res);
+}
+
+BFCAD::Conjunct::Conjunct()
+{
+    this->members = {};
+}
+
+BFCAD::Conjunct::Conjunct(std::unordered_map<std::string, bool> const& members)
+{
+    this->members = members;
+}
+
+std::string BFCAD::DNF::toString() const
+{
+    std::string res;
+    size_t conj_num = this->conjuncts.size();
+    for (int i = 0; i < conj_num; ++i) {
+        res.append(this->conjuncts[i].toString());
+        if (i != conj_num-1)
+            res.append(" || ");
+    }
+    return std::move(res);
+}
+
+bool BFCAD::DNF::addConjunct(Conjunct const& conjunct)
+{
+    for (Conjunct const& c : this->conjuncts) {
+        if (c == conjunct)
+            return false;
+    }
+    this->conjuncts.push_back(conjunct);
+    return true;
+}
 
 BFCAD::BooleanFunction::BooleanFunction(std::string const& parameter_name, 
                                         bool is_inverted) 
@@ -67,7 +123,7 @@ std::string BFCAD::BooleanFunction::get_truth_table() const
     std::string result;
     std::unordered_map<std::string, bool> params;
 
-    for (auto param : this->parameters) {
+    for (auto const& param : this->parameters) {
         result.append("\t" + param);
         params.insert(std::make_pair(param, 0));
     }
@@ -88,14 +144,39 @@ std::string BFCAD::BooleanFunction::get_truth_table() const
         bool bf_result = this->calculate(params);
         result.append("\t").append(std::to_string(bf_result));
     }
-    
 
     return result;
 }
 
 void BFCAD::BooleanFunction::print_parameters() const
 {
-    for (auto param : this->parameters) {
+    for (auto const& param : this->parameters) {
         BFCAD::Logger::log(std::string(param));
     }
+}
+
+BFCAD::DNF BFCAD::BooleanFunction::get_canonical_DNF() const
+{
+    DNF dnf;
+    std::unordered_map<std::string, bool> params;
+
+    for (auto const& param : this->parameters) {
+        params.insert(std::make_pair(param, 0));
+    }
+
+    int limit = (1<<this->parameters.size());
+    for (int i = 0; i < limit; ++i) {
+        int param_idx = this->parameters.size()-1;
+        for (auto it = this->parameters.begin(); it != this->parameters.end(); ++it) {
+            bool value = i & 1<<param_idx;
+            params[*it] = value;
+            --param_idx;
+        }
+        bool bf_result = this->calculate(params);
+        if (bf_result) {
+            dnf.conjuncts.emplace_back(params);            
+        }
+    }
+
+    return std::move(dnf);
 }

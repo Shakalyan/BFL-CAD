@@ -14,6 +14,32 @@ namespace BFCAD {
         XOR
     };
 
+    class Conjunct {
+    public:
+        std::unordered_map<std::string, bool> members;
+
+    public:
+
+        Conjunct();
+        Conjunct(std::unordered_map<std::string, bool> const& members);
+
+        bool operator==(Conjunct const& conjunct) const;
+
+        std::string toString() const;
+
+    };
+    
+    class DNF {
+    public:
+        std::vector<Conjunct> conjuncts;
+
+    public:
+        std::string toString() const;
+
+        bool addConjunct(Conjunct const& conjunct);
+
+    };
+
     class BooleanFunction {
     private:
         std::unique_ptr<BooleanFunction> left_bf;
@@ -48,6 +74,8 @@ namespace BFCAD {
         std::string get_truth_table() const;
 
         void print_parameters() const;
+
+        DNF get_canonical_DNF() const;
 
     };
 

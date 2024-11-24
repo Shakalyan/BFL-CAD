@@ -5,6 +5,8 @@
 #include "bflt_exception.h"
 #include "logger.h"
 #include "formatter.h"
+#include "optimizer.h"
+#include "quine_opt.h"
 
 
 int main()
@@ -21,10 +23,15 @@ int main()
     try {
         std::unique_ptr<BFCAD::BooleanFunction> bf = translator.translate(std::cin);
         BFCAD::Logger::log(bf->get_truth_table());
+        
+        BFCAD::IOptimizer&& optimizer = BFCAD::QuineOpt();
+        optimizer.optimize(std::move(bf));
+
     }
     catch (BFCAD::BFLTException &e) {
         BFCAD::Logger::log(BFCAD::format("EXCEPTION: %", e.what()));
     }
+
 
     BFCAD::Logger::log("Program end");
 

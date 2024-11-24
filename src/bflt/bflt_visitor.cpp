@@ -16,10 +16,10 @@ std::any BFCAD::BFLTVisitor::visitBlock(BFLParser::BlockContext *ctx)
     BFCAD::Logger::log(BFCAD::format("visit block: %", ctx->blk->getText()));
     switch (ctx->blk->getType()) {
         case BFLParser::INS:
-            for (auto id : ctx->ID()) in_ids.insert(id->getText());
+            for (auto const& id : ctx->ID()) in_ids.insert(id->getText());
             break;
         case BFLParser::BFS:
-            for (auto id : ctx->ID()) bf_ids[id->getText()] = nullptr;
+            for (auto const& id : ctx->ID()) bf_ids[id->getText()] = nullptr;
             break;
         case BFLParser::OUT:
             out_id = ctx->ID()[0]->getText();

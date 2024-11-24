@@ -6,7 +6,7 @@ BFLT_PATH=src/bflt
 BFLT_SOURCES=bfl_translator.cpp bflt_visitor.cpp bflt_exception.cpp
 
 ALGC_PATH=src/alg_core
-ALGC_SOURCES=bf.cpp
+ALGC_SOURCES=bf.cpp quine_opt.cpp
 
 LGGR_PATH=src/logger
 LGGR_SOURCES=logger.cpp
