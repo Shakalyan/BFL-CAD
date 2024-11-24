@@ -24,7 +24,11 @@ namespace BFCAD {
 
         virtual std::any visitId(BFLParser::IdContext *ctx) override;
 
-        virtual std::any visitOperation(BFLParser::OperationContext *ctx) override;
+        virtual std::any visitAndOp(BFLParser::AndOpContext *ctx) override;
+
+        virtual std::any visitOrOp(BFLParser::OrOpContext *ctx) override;
+
+        virtual std::any visitXorOp(BFLParser::XorOpContext *ctx) override;
 
     };
 

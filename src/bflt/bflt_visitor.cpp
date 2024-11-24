@@ -31,7 +31,7 @@ std::any BFCAD::BFLTVisitor::visitBlock(BFLParser::BlockContext *ctx)
 std::any BFCAD::BFLTVisitor::visitAssign(BFLParser::AssignContext *ctx) 
 {
     std::string id = ctx->ID()[0].getText();
-    //BFCAD_log("visit assign: ", id);
+    BFCAD::Logger::log(BFCAD::format("visit assign: %", id));
     if (id == out_id) {
         res_bf = std::any_cast<BFCAD::BooleanFunction*>(visit(ctx->expr()));
         return 0;
@@ -54,7 +54,7 @@ std::any BFCAD::BFLTVisitor::visitAssign(BFLParser::AssignContext *ctx)
 
 std::any BFCAD::BFLTVisitor::visitParens(BFLParser::ParensContext *ctx) 
 {
-    //BFCAD_log("visit parens");
+    BFCAD::Logger::log("visit parens");
     BFCAD::BooleanFunction *bf = std::any_cast<BFCAD::BooleanFunction*>(visit(ctx->expr()));
     if (static_cast<bool>(ctx->NOT())) {
         bf->invert();
@@ -65,7 +65,7 @@ std::any BFCAD::BFLTVisitor::visitParens(BFLParser::ParensContext *ctx)
 std::any BFCAD::BFLTVisitor::visitId(BFLParser::IdContext *ctx) 
 {
     std::string id = ctx->ID()->getText();
-    //BFCAD_log("visit id: ", id);
+    BFCAD::Logger::log(BFCAD::format("visit id: ", id));
 
     BFCAD::BooleanFunction *bf = nullptr;
     if (this->in_ids.find(id) != this->in_ids.end()) {
@@ -85,22 +85,26 @@ std::any BFCAD::BFLTVisitor::visitId(BFLParser::IdContext *ctx)
     return bf;
 }
 
-std::any BFCAD::BFLTVisitor::visitOperation(BFLParser::OperationContext *ctx) 
+std::any BFCAD::BFLTVisitor::visitAndOp(BFLParser::AndOpContext *ctx)
 {
-    //BFCAD_log("visit operation: ", ctx->op->getText());
+    BFCAD::Logger::log("visit AND operation");
     BFCAD::BooleanFunction *left_bf = std::any_cast<BFCAD::BooleanFunction*>(visit(ctx->expr(0)));
     BFCAD::BooleanFunction *right_bf = std::any_cast<BFCAD::BooleanFunction*>(visit(ctx->expr(1)));
-    BFCAD::Operation op;
-    switch (ctx->op->getType()) {
-        case BFLParser::AND:
-            op = BFCAD::Operation::AND;
-            break;
-        case BFLParser::OR:
-            op = BFCAD::Operation::OR;
-            break;
-        case BFLParser::XOR:
-            op = BFCAD::Operation::XOR;
-            break;
-    }
-    return new BFCAD::BooleanFunction(left_bf, right_bf, op);
+    return new BFCAD::BooleanFunction(left_bf, right_bf, BFCAD::Operation::AND);
+}
+
+std::any BFCAD::BFLTVisitor::visitOrOp(BFLParser::OrOpContext *ctx)
+{
+    BFCAD::Logger::log("visit OR operation");
+    BFCAD::BooleanFunction *left_bf = std::any_cast<BFCAD::BooleanFunction*>(visit(ctx->expr(0)));
+    BFCAD::BooleanFunction *right_bf = std::any_cast<BFCAD::BooleanFunction*>(visit(ctx->expr(1)));
+    return new BFCAD::BooleanFunction(left_bf, right_bf, BFCAD::Operation::OR);
+}
+
+std::any BFCAD::BFLTVisitor::visitXorOp(BFLParser::XorOpContext *ctx)
+{
+    BFCAD::Logger::log("visit XOR operation");
+    BFCAD::BooleanFunction *left_bf = std::any_cast<BFCAD::BooleanFunction*>(visit(ctx->expr(0)));
+    BFCAD::BooleanFunction *right_bf = std::any_cast<BFCAD::BooleanFunction*>(visit(ctx->expr(1)));
+    return new BFCAD::BooleanFunction(left_bf, right_bf, BFCAD::Operation::XOR);
 }

@@ -8,9 +8,11 @@ stat: blk=(INS|BFS|OUT) '{' ID (',' ID)* '};' # block
     | ID '=' expr ';'                       # assign
     ;
 
-expr: expr op=(AND|OR|XOR) expr # operation
-    | NOT? '(' expr ')'         # parens
-    | NOT? ID                   # id
+expr: expr AND expr     # andOp
+    | expr OR expr      # orOp
+    | expr XOR expr     # xorOp
+    | NOT? '(' expr ')' # parens
+    | NOT? ID           # id
     ;
 
 INS: 'INS';

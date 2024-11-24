@@ -7,9 +7,6 @@
 #include "formatter.h"
 
 
-
-
-
 int main()
 {
     std::ofstream log_file;
