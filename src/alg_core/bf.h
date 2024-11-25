@@ -27,6 +27,8 @@ namespace BFCAD {
 
         std::string toString() const;
 
+        size_t size() const;
+
     };
     
     class DNF {
@@ -48,11 +50,12 @@ namespace BFCAD {
         std::set<std::string> parameters;
         bool is_inverted;
 
+        void move_bf(BooleanFunction *dst, BooleanFunction &&src);
+
     public:
         BooleanFunction() = delete;
         BooleanFunction(BooleanFunction const&) = delete;
         BooleanFunction& operator=(BooleanFunction const&) = delete;
-
 
         BooleanFunction(std::string const& parameter_name, 
                         bool is_inverted = false);
@@ -66,6 +69,14 @@ namespace BFCAD {
                         BooleanFunction *right_bf, 
                         Operation operation, 
                         bool is_inverted = false);
+        
+        BooleanFunction(std::vector<std::unique_ptr<BooleanFunction>> &&bfs, Operation op);
+
+        BooleanFunction(Conjunct const& conjunct);
+
+        BooleanFunction(DNF const& dnf);
+
+        BooleanFunction& operator=(BooleanFunction &&bf);
 
         void invert();
 

@@ -38,6 +38,11 @@ BFCAD::Conjunct::Conjunct(std::unordered_map<std::string, bool> const& members)
     this->members = members;
 }
 
+size_t BFCAD::Conjunct::size() const
+{
+    return this->members.size();
+}
+
 std::string BFCAD::DNF::toString() const
 {
     std::string res;
@@ -91,6 +96,50 @@ BFCAD::BooleanFunction::BooleanFunction(BooleanFunction *left_bf,
     this->is_inverted = is_inverted;
     this->parameters.insert(this->left_bf->parameters.begin(), this->left_bf->parameters.end());
     this->parameters.insert(this->right_bf->parameters.begin(), this->right_bf->parameters.end());    
+}
+
+BFCAD::BooleanFunction::BooleanFunction(std::vector<std::unique_ptr<BooleanFunction>> &&bfs, Operation op)
+{
+    while (bfs.size() != 1) {
+        bfs.push_back(std::make_unique<BooleanFunction>(std::move(bfs[0]), std::move(bfs[1]), op));
+        bfs.erase(bfs.begin());
+        bfs.erase(bfs.begin());
+    }
+    move_bf(this, std::move(*bfs[0]));
+}
+
+BFCAD::BooleanFunction::BooleanFunction(Conjunct const& conjunct)
+{
+    std::vector<std::unique_ptr<BooleanFunction>> bfs;
+    for (auto const& mmb : conjunct.members) {
+        bfs.push_back(std::make_unique<BooleanFunction>(mmb.first, !mmb.second));
+    }
+    move_bf(this, BooleanFunction(std::move(bfs), Operation::AND));
+}
+
+BFCAD::BooleanFunction::BooleanFunction(DNF const& dnf)
+{
+    std::vector<std::unique_ptr<BooleanFunction>> bfs;
+    for (auto const& conj : dnf.conjuncts) {
+        bfs.push_back(std::make_unique<BooleanFunction>(conj));
+    }
+    move_bf(this, BooleanFunction(std::move(bfs), Operation::OR));
+    //std::cout << bfs[2]->get_truth_table() << std::endl;
+}
+
+BFCAD::BooleanFunction& BFCAD::BooleanFunction::operator=(BooleanFunction&& bf)
+{
+    move_bf(this, std::move(bf));
+    return *this;
+}
+
+void BFCAD::BooleanFunction::move_bf(BooleanFunction *dst, BooleanFunction &&src)
+{
+    dst->left_bf = std::move(src.left_bf);
+    dst->right_bf = std::move(src.right_bf);
+    dst->operation = src.operation;
+    dst->parameters = std::move(src.parameters);
+    dst->is_inverted = src.is_inverted;
 }
 
 void BFCAD::BooleanFunction::invert()

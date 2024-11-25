@@ -25,8 +25,8 @@ int main()
         BFCAD::Logger::log(bf->get_truth_table());
         
         BFCAD::IOptimizer&& optimizer = BFCAD::QuineOpt();
-        optimizer.optimize(std::move(bf));
-
+        std::unique_ptr<BFCAD::BooleanFunction> optimized_bf = optimizer.optimize(std::move(bf));
+        BFCAD::Logger::log(optimized_bf->get_truth_table());
     }
     catch (BFCAD::BFLTException &e) {
         BFCAD::Logger::log(BFCAD::format("EXCEPTION: %", e.what()));
