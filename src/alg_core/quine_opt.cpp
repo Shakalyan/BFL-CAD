@@ -110,7 +110,36 @@ BFCAD::DNF BFCAD::QuineOpt::get_minimal_DNF(BFCAD::DNF const& canonical_DNF, BFC
             core_impl[overlapped_impl_idx] = true;
     }
 
-    
+    // find not overlapped conjunct indices
+    std::vector<int> not_overlapped_conjs_idxs;
+    for (int conj_i = 0; conj_i < cdnf_conj_num; ++conj_i) {
+        bool overlapped = false;
+        for (int impl_i = 0; impl_i < rdnf_impl_num; ++impl_i) {
+            if (core_impl[impl_i] && implicant_mx[impl_i][conj_i]) {
+                overlapped = true;
+                break;
+            }
+        }
+        if (!overlapped) {
+            not_overlapped_conjs_idxs.push_back(conj_i);
+            std::cout << conj_i << " ";
+        }
+    }
+
+    // find not core implicants indices
+    std::vector<int> not_core_impls_idxs;
+    for (int i = 0; i < rdnf_impl_num; ++i) {
+        if (!core_impl[i])
+            not_core_impls_idxs.push_back(i);
+    }
+
+    // find minimal needed non-core implicants
+    int limit = (1 << not_core_impls_idxs.size());
+    for (int bm = 0; bm < limit; ++bm) {
+        
+    }
+
+
 
 
     return minimal_dnf;
