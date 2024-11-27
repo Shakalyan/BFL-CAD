@@ -8,9 +8,9 @@
 #include "optimizer.h"
 #include "quine_opt.h"
 
-#include <QtGui>
+#include "bfc_gui.h"
+
 #include <QApplication>
-#include <QLabel>
 
 int main(int argc, char **argv)
 {
@@ -41,8 +41,12 @@ int main(int argc, char **argv)
 
     // log_file.close();
     // return 0;
+
     QApplication app(argc, argv);
-    QLabel label("Hello, world!");
-    label.show();
+
+    BFCAD::BfcGui gui;
+    gui.showMaximized();
+
+
     return app.exec();
 }
