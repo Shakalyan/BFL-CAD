@@ -44,7 +44,7 @@ int main(int argc, char **argv)
 
     QApplication app(argc, argv);
 
-    BFCAD::BfcGui gui;
+    BFCAD::UI::BfcGui gui;
     gui.showMaximized();
 
 

@@ -2,7 +2,7 @@
 
 #include <QMainWindow>
 
-namespace BFCAD {
+namespace BFCAD::UI {
 
     class BfcGui : public QMainWindow {
 
