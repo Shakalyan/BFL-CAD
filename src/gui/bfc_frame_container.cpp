@@ -42,5 +42,5 @@ BFCAD::UI::FrameContainer::FrameContainer(QWidget *parent) : QWidget(parent)
     setLayout(layout);
 
     connect(side_panel, &SidePanel::itemSelected, output_panel, &OutputPanel::displayText);
-    connect(side_panel, &SidePanel::itemSelected, editor, &Editor::readFile);
+    connect(side_panel, &SidePanel::itemSelected, editor, &Editor::openFile);
 }
