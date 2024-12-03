@@ -129,11 +129,13 @@ void BFCAD::UI::Editor::saveFile()
 {
     if (this->current_tab && this->current_tab->unsaved) {
         std::cout << "save" << std::endl;
+        this->current_tab->file_content = this->text_field->toPlainText();
 
         QFile file(this->current_tab->file_path);
         file.open(QIODevice::WriteOnly);
         QTextStream out(&file);
         out << this->current_tab->file_content;
+        out.flush();
         file.close();
 
         int tab_index = this->tabs->indexOf(this->current_tab);
