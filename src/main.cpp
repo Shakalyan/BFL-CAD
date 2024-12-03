@@ -22,13 +22,10 @@ int main(int argc, char **argv)
     BFCAD::Logger::add_ostream(&std::cout);
     BFCAD::Logger::add_ostream(&log_file);
 
-
     BFCAD::UI::BfcGui gui;
     gui.showMaximized();
 
     BFCAD::Logger::log("Program start");
-    BFCAD::Logger::log("asdf kek privet");
-    // QTextStream(stdout) << "QTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTHello, world!" << Qt::endl;
 
     // BFCAD::BFLTranslator translator;
     // try {
@@ -45,9 +42,6 @@ int main(int argc, char **argv)
 
 
     // BFCAD::Logger::log("Program end");
-
-    // log_file.close();
-    // return 0;
 
     return app.exec();
 }

@@ -50,11 +50,20 @@ BFCAD::UI::OutputPanel::OutputPanel(QWidget *parent) : QFrame(parent)
     Logger::add_ostream(this->ostream);
 
     setLayout(layout);
+
+    connect(this->text_field, &QTextEdit::textChanged, this, &OutputPanel::onTextChanged);
 }
 
 BFCAD::UI::OutputPanel::~OutputPanel()
 {
     delete this->ostream;
+}
+
+void BFCAD::UI::OutputPanel::onTextChanged()
+{
+    QTextCursor cursor = this->text_field->textCursor();
+    cursor.movePosition(QTextCursor::End);
+    this->text_field->setTextCursor(cursor);
 }
 
 void BFCAD::UI::OutputPanel::displayText(QString const& text)

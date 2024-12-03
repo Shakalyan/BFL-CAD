@@ -17,7 +17,7 @@ namespace BFCAD {
 
         BFLTranslator();
 
-        std::unique_ptr<BFCAD::BooleanFunction> translate(std::istream &istream);
+        std::unique_ptr<BFCAD::BooleanFunction> translate(std::string const& input);
 
     };
 

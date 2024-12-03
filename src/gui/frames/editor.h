@@ -34,13 +34,14 @@ namespace BFCAD::UI {
         public:
             Editor(QWidget *parent = 0);
         
-        public slots:
+        public Q_SLOTS:
             void openFile(QString const& file_path);
             void openTab(int tab_index);
             void closeFile(int tab_index);
             void searchFile();
             void onTextChanged();
             void saveFile();
+            void optimize();
 
     };
 

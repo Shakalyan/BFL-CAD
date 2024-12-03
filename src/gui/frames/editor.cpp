@@ -1,5 +1,12 @@
 #include "frames/editor.h"
 
+#include "logger.h"
+#include "bfl_translator.h"
+#include "bflt_exception.h"
+#include "formatter.h"
+#include "optimizer.h"
+#include "quine_opt.h"
+
 #include <QVBoxLayout>
 #include <QFile>
 #include <QFileInfo>
@@ -150,4 +157,33 @@ void BFCAD::UI::Editor::set_text_blocked(QString const& text)
     this->text_field->blockSignals(true);
     this->text_field->setText(text);
     this->text_field->blockSignals(blocked);
+}
+
+void BFCAD::UI::Editor::optimize()
+{
+    if (!this->current_tab) {
+        Logger::log("Open file to compile");
+        return;
+    }
+
+    BFLTranslator translator;
+    try {
+        std::unique_ptr<BooleanFunction> bf = translator.translate(this->current_tab->file_content.toStdString());
+        Logger::log("Initial BF:");
+        Logger::log(bf->to_string());
+
+        Logger::log("Initial BF's truth table:");
+        Logger::log(bf->get_truth_table());
+        
+        IOptimizer&& optimizer = QuineOpt();
+        std::unique_ptr<BooleanFunction> optimized_bf = optimizer.optimize(std::move(bf));
+        Logger::log("Optimized BF:");
+        Logger::log(optimized_bf->to_string());
+
+        Logger::log("Optimized BF's truth table:");
+        Logger::log(optimized_bf->get_truth_table());
+    }
+    catch (BFLTException &e) {
+        Logger::log(format("EXCEPTION: %", e.what()));
+    }
 }

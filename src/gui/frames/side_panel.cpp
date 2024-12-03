@@ -24,6 +24,6 @@ BFCAD::UI::SidePanel::SidePanel(QWidget *parent) : QFrame(parent)
     
     connect(tree_view, &QTreeView::clicked, this, [this, model](QModelIndex const& index) {
         std::cout << "click!" << std::endl;
-        emit itemSelected(model->filePath(index));
+        Q_EMIT itemSelected(model->filePath(index));
     });
 }

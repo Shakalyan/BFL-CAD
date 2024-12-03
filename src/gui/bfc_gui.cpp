@@ -22,18 +22,21 @@ BFCAD::UI::BfcGui::BfcGui(QWidget *parent) : QMainWindow(parent)
     connect(quit, &QAction::triggered, qApp, QApplication::quit);
 
     // toolbar
-    QPixmap compilepix("media/play-button.png");
+    QPixmap optimizepix("media/play-button.png");
     QPixmap openpix("media/open.png");
     QPixmap savepix("media/save.png");
 
-    QAction *compile_act = new QAction(compilepix, "Compile", this);
-    QAction *open_file_act = new QAction(openpix, "Open file", this);
-    QAction *save_act = new QAction(savepix, "Save file", this);
+    QAction *optimize_act = new QAction(optimizepix, "Compile", this);
+    optimize_act->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_R));
 
+    QAction *open_file_act = new QAction(openpix, "Open file", this);
+    open_file_act->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_O));
+
+    QAction *save_act = new QAction(savepix, "Save file", this);
     save_act->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_S));
     
     QToolBar *toolbar = addToolBar("main toolbar");
-    toolbar->addAction(compile_act);
+    toolbar->addAction(optimize_act);
     toolbar->addAction(open_file_act);
     toolbar->addAction(save_act);
 
@@ -44,4 +47,5 @@ BFCAD::UI::BfcGui::BfcGui(QWidget *parent) : QMainWindow(parent)
 
     connect(open_file_act, &QAction::triggered, frame_container->editor, &Editor::searchFile);
     connect(save_act, &QAction::triggered, frame_container->editor, &Editor::saveFile);
+    connect(optimize_act, &QAction::triggered, frame_container->editor, &Editor::optimize);
 }

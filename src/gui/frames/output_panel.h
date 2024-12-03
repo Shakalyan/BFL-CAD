@@ -52,7 +52,8 @@ namespace BFCAD::UI
             OutputPanel(QWidget *parent = 0);
             ~OutputPanel();
         
-        public slots:
+        public Q_SLOTS:
+            void onTextChanged();
             void displayText(QString const& text);
     };
 

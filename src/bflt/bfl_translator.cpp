@@ -7,10 +7,10 @@ BFCAD::BFLTranslator::BFLTranslator()
     this->visitor = BFLTVisitor();
 }
 
-std::unique_ptr<BFCAD::BooleanFunction> BFCAD::BFLTranslator::translate(std::istream &istream)
+std::unique_ptr<BFCAD::BooleanFunction> BFCAD::BFLTranslator::translate(std::string const& input)
 {
-    antlr4::ANTLRInputStream input(std::cin);
-    BFLLexer lexer(&input);
+    antlr4::ANTLRInputStream input_stream(input);
+    BFLLexer lexer(&input_stream);
     antlr4::CommonTokenStream tokens(&lexer);
     BFLParser parser(&tokens);
 

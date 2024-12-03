@@ -9,9 +9,10 @@
 namespace BFCAD {
 
     enum class Operation {
+        NO_OP,
         AND,
-        OR,
-        XOR
+        XOR,
+        OR
     };
 
     class Conjunct {
@@ -87,6 +88,8 @@ namespace BFCAD {
         void print_parameters() const;
 
         DNF get_canonical_DNF() const;
+
+        std::string to_string() const;
 
     };
 

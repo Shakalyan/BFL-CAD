@@ -11,7 +11,7 @@ namespace BFCAD::UI {
 
         BfcGui(QWidget *parent = 0);
     
-    signals:
+    Q_SIGNALS:
         void save_file();
 
     };

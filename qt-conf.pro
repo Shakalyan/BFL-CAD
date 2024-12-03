@@ -57,3 +57,5 @@ antlr4GenerateTarget.target = antlr4-generate
 antlr4GenerateTarget.depends = $$ANTLR4_GRAMMAR
 antlr4GenerateTarget.commands = antlr4 -no-listener -visitor -Dlanguage=Cpp -o $$ANTLR4_GENERTD -Xexact-output-dir $$ANTLR4_GRAMMAR
 QMAKE_EXTRA_TARGETS += antlr4GenerateTarget
+
+CONFIG += no_keywords

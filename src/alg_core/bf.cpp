@@ -70,6 +70,7 @@ BFCAD::BooleanFunction::BooleanFunction(std::string const& parameter_name,
 {
     this->parameters.insert(parameter_name);
     this->is_inverted = is_inverted;
+    this->operation = Operation::NO_OP;
 }
 
 BFCAD::BooleanFunction::BooleanFunction(std::unique_ptr<BooleanFunction> left_bf, 
@@ -228,4 +229,55 @@ BFCAD::DNF BFCAD::BooleanFunction::get_canonical_DNF() const
     }
 
     return std::move(dnf);
+}
+
+std::string BFCAD::BooleanFunction::to_string() const
+{
+    std::string result;
+
+    if (!this->left_bf && !this->right_bf) {
+        if (this->is_inverted)
+            result.append("!");
+        result.append(*this->parameters.begin());
+        return result;
+    }
+
+    if (!this->left_bf || !this->right_bf) {
+        Logger::log("Some bf is asdfasdf");
+        return "";
+    }
+
+    if (this->is_inverted)
+        result.append("!(");
+
+    std::string lbf_res = this->left_bf->to_string();
+    if (this->operation < this->left_bf->operation && !this->left_bf->is_inverted) {
+        result.append("(" + lbf_res + ")");
+    } else {
+        result.append(lbf_res);
+    }
+
+    switch(this->operation) {
+        case Operation::AND:
+            result.append(" && ");
+            break;
+        case Operation::OR:
+            result.append(" || ");
+            break;
+        case Operation::XOR:
+            result.append(" ^ ");
+            break;
+    }
+
+    std::string rbf_res = this->right_bf->to_string();
+    if (this->operation < this->right_bf->operation && !this->right_bf->is_inverted) {
+        result.append("(" + rbf_res + ")");
+    } else {
+        result.append(rbf_res);
+    }
+
+    if (this->is_inverted)
+        result.append(")");
+
+    return result;
 }

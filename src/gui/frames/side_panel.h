@@ -14,7 +14,7 @@ namespace BFCAD::UI
         public:
             SidePanel(QWidget *parent = 0);
         
-        signals:
+        Q_SIGNALS:
             void itemSelected(QString const& filePath);
 
     };
