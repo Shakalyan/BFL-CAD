@@ -29,6 +29,8 @@ BFCAD::UI::BfcGui::BfcGui(QWidget *parent) : QMainWindow(parent)
     QAction *compile_act = new QAction(compilepix, "Compile", this);
     QAction *open_file_act = new QAction(openpix, "Open file", this);
     QAction *save_act = new QAction(savepix, "Save file", this);
+
+    save_act->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_S));
     
     QToolBar *toolbar = addToolBar("main toolbar");
     toolbar->addAction(compile_act);
@@ -41,4 +43,5 @@ BFCAD::UI::BfcGui::BfcGui(QWidget *parent) : QMainWindow(parent)
     setCentralWidget(frame_container);
 
     connect(open_file_act, &QAction::triggered, frame_container->editor, &Editor::searchFile);
+    connect(save_act, &QAction::triggered, frame_container->editor, &Editor::saveFile);
 }

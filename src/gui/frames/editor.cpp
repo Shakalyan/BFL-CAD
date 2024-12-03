@@ -12,6 +12,7 @@ BFCAD::UI::FileTab::FileTab(QString const& file_path)
 {
     this->file_path = file_path;
     this->file_name = QFileInfo(file_path).fileName();
+    this->unsaved = false;
 
     QFile file(file_path);
     QFileInfo file_info(file_path);
@@ -120,6 +121,24 @@ void BFCAD::UI::Editor::onTextChanged()
     if (this->current_tab) {
         int tab_index = this->tabs->indexOf(this->current_tab);
         this->tabs->setTabText(tab_index, "*" + this->current_tab->file_name);
+        this->current_tab->unsaved = true;
+    }
+}
+
+void BFCAD::UI::Editor::saveFile()
+{
+    if (this->current_tab && this->current_tab->unsaved) {
+        std::cout << "save" << std::endl;
+
+        QFile file(this->current_tab->file_path);
+        file.open(QIODevice::WriteOnly);
+        QTextStream out(&file);
+        out << this->current_tab->file_content;
+        file.close();
+
+        int tab_index = this->tabs->indexOf(this->current_tab);
+        this->tabs->setTabText(tab_index, this->current_tab->file_name);
+        this->current_tab->unsaved = false;
     }
 }
 

@@ -13,6 +13,7 @@ namespace BFCAD::UI {
             QString file_path;
             QString file_name;
             QString file_content;
+            bool unsaved;
 
             FileTab(QString const& file_path);
 
@@ -39,6 +40,7 @@ namespace BFCAD::UI {
             void closeFile(int tab_index);
             void searchFile();
             void onTextChanged();
+            void saveFile();
 
     };
 
