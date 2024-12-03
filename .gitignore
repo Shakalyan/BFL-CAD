@@ -4,7 +4,7 @@
 generated/
 build/
 *.o
-test.txt
+*.bfl
 log.txt
 qt-conf.mk
 Makefile

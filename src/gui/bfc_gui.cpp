@@ -39,4 +39,6 @@ BFCAD::UI::BfcGui::BfcGui(QWidget *parent) : QMainWindow(parent)
 
     FrameContainer *frame_container = new FrameContainer(this);
     setCentralWidget(frame_container);
+
+    connect(open_file_act, &QAction::triggered, frame_container->editor, &Editor::searchFile);
 }

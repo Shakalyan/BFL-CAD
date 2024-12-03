@@ -32,7 +32,9 @@ namespace BFCAD::UI {
         
         public slots:
             void openFile(QString const& file_path);
+            void openTab(int tab_index);
             void closeFile(int tab_index);
+            void searchFile();
 
     };
 
