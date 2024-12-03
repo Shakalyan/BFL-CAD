@@ -26,6 +26,9 @@ namespace BFCAD::UI {
         private:
             QTextEdit *text_field;
             QTabWidget *tabs;
+            FileTab *current_tab;
+
+            void set_text_blocked(QString const& text);
 
         public:
             Editor(QWidget *parent = 0);
@@ -35,6 +38,7 @@ namespace BFCAD::UI {
             void openTab(int tab_index);
             void closeFile(int tab_index);
             void searchFile();
+            void onTextChanged();
 
     };
 

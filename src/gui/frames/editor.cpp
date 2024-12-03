@@ -32,6 +32,7 @@ BFCAD::UI::Editor::Editor(QWidget *parent) : QFrame(parent)
 {
     this->text_field = new QTextEdit(this);
     this->tabs = new QTabWidget(this);
+    this->current_tab = nullptr;
 
     this->tabs->setFixedHeight(25);
     this->tabs->setTabsClosable(true);
@@ -55,25 +56,24 @@ BFCAD::UI::Editor::Editor(QWidget *parent) : QFrame(parent)
 
     connect(this->tabs, &QTabWidget::tabCloseRequested, this, &Editor::closeFile);
     connect(this->tabs, &QTabWidget::currentChanged, this, &Editor::openTab);
+    connect(this->text_field, &QTextEdit::textChanged, this, &Editor::onTextChanged);
 }
 
 void BFCAD::UI::Editor::openFile(QString const& file_path)
 {    
-    FileTab *current_tab = nullptr;
+    FileTab *tab = nullptr;
     for (int i = 0; i < this->tabs->count(); ++i) {
         FileTab *file_tab = static_cast<FileTab*>(this->tabs->widget(i));
         if (file_tab->file_path == file_path) {
-            current_tab = file_tab;
+            tab = file_tab;
             break;
         }
     }
-    if (!current_tab) {
-        current_tab = new FileTab(file_path);
-        this->tabs->addTab(current_tab, current_tab->file_name);
+    if (!tab) {
+        tab = new FileTab(file_path);
+        this->tabs->addTab(tab, tab->file_name);
     }
-    this->tabs->setCurrentWidget(current_tab);
-
-    this->text_field->setText(current_tab->file_content);
+    this->tabs->setCurrentWidget(tab);
 }
 
 void BFCAD::UI::Editor::openTab(int tab_index)
@@ -85,7 +85,13 @@ void BFCAD::UI::Editor::openTab(int tab_index)
 
     FileTab *tab = static_cast<FileTab*>(this->tabs->widget(tab_index));
     this->tabs->setCurrentWidget(tab);
-    this->text_field->setText(tab->file_content);
+    
+    if (this->current_tab) {
+        this->current_tab->file_content = this->text_field->toPlainText();
+    }
+    this->current_tab = tab;
+
+    this->set_text_blocked(tab->file_content);
 }
 
 void BFCAD::UI::Editor::closeFile(int tab_index)
@@ -97,7 +103,8 @@ void BFCAD::UI::Editor::closeFile(int tab_index)
         this->openFile(static_cast<FileTab*>(this->tabs->widget(tabs_count-1))->file_path);
     }
     else {
-        this->text_field->setText("");
+        this->current_tab = nullptr;
+        this->set_text_blocked("");
     }    
 }
 
@@ -106,4 +113,20 @@ void BFCAD::UI::Editor::searchFile()
     QString chosen_file_path = QFileDialog::getOpenFileName(this, "Choose file", QDir::currentPath(), "*.bfl");
     if (!chosen_file_path.isEmpty())
         this->openFile(chosen_file_path);
+}
+
+void BFCAD::UI::Editor::onTextChanged()
+{
+    if (this->current_tab) {
+        int tab_index = this->tabs->indexOf(this->current_tab);
+        this->tabs->setTabText(tab_index, "*" + this->current_tab->file_name);
+    }
+}
+
+void BFCAD::UI::Editor::set_text_blocked(QString const& text)
+{
+    bool blocked = this->text_field->signalsBlocked();
+    this->text_field->blockSignals(true);
+    this->text_field->setText(text);
+    this->text_field->blockSignals(blocked);
 }
