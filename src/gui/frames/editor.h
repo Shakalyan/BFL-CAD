@@ -12,6 +12,7 @@ namespace BFCAD::UI {
         public:
             QString file_path;
             QString file_name;
+            QString file_content;
 
             FileTab(QString const& file_path);
 

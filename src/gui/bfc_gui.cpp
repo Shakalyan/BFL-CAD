@@ -23,9 +23,17 @@ BFCAD::UI::BfcGui::BfcGui(QWidget *parent) : QMainWindow(parent)
 
     // toolbar
     QPixmap compilepix("media/play-button.png");
+    QPixmap openpix("media/open.png");
+    QPixmap savepix("media/save.png");
+
+    QAction *compile_act = new QAction(compilepix, "Compile", this);
+    QAction *open_file_act = new QAction(openpix, "Open file", this);
+    QAction *save_act = new QAction(savepix, "Save file", this);
     
     QToolBar *toolbar = addToolBar("main toolbar");
-    toolbar->addAction(QIcon(compilepix), "Compile");
+    toolbar->addAction(compile_act);
+    toolbar->addAction(open_file_act);
+    toolbar->addAction(save_act);
 
     statusBar()->showMessage("Ready");
 
