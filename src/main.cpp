@@ -14,13 +14,20 @@
 
 int main(int argc, char **argv)
 {
-    // std::ofstream log_file;
-    // log_file.open("log.txt");
-    // BFCAD::Logger::set_loglevel(BFCAD::LogLevel::LOW);
-    // BFCAD::Logger::add_ostream(&std::cout);
-    // BFCAD::Logger::add_ostream(&log_file);
+    QApplication app(argc, argv);
 
-    // BFCAD::Logger::log("Program start");
+    std::ofstream log_file;
+    log_file.open("log.txt");
+    BFCAD::Logger::set_loglevel(BFCAD::LogLevel::LOW);
+    BFCAD::Logger::add_ostream(&std::cout);
+    BFCAD::Logger::add_ostream(&log_file);
+
+
+    BFCAD::UI::BfcGui gui;
+    gui.showMaximized();
+
+    BFCAD::Logger::log("Program start");
+    BFCAD::Logger::log("asdf kek privet");
     // QTextStream(stdout) << "QTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTHello, world!" << Qt::endl;
 
     // BFCAD::BFLTranslator translator;
@@ -41,12 +48,6 @@ int main(int argc, char **argv)
 
     // log_file.close();
     // return 0;
-
-    QApplication app(argc, argv);
-
-    BFCAD::UI::BfcGui gui;
-    gui.showMaximized();
-
 
     return app.exec();
 }

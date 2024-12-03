@@ -24,6 +24,7 @@ CMMN_PATH=src/common
 CMMN_SOURCES=
 for (src, CMMN_SOURCES): SOURCES += $$CMMN_PATH/$${src}.cpp
 for (src, CMMN_SOURCES): HEADERS += $$CMMN_PATH/$${src}.h
+HEADERS += $$CMMN_PATH/formatter.h
 
 GUI_PATH=src/gui
 GUI_SOURCES=bfc_gui bfc_frame_container frames/editor frames/output_panel frames/side_panel
