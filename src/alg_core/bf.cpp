@@ -242,11 +242,6 @@ std::string BFCAD::BooleanFunction::to_string() const
         return result;
     }
 
-    if (!this->left_bf || !this->right_bf) {
-        Logger::log("Some bf is asdfasdf");
-        return "";
-    }
-
     if (this->is_inverted)
         result.append("!(");
 
