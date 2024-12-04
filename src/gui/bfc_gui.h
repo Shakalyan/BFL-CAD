@@ -1,5 +1,7 @@
 #pragma once
 
+#include "bf.h"
+
 #include <QMainWindow>
 
 namespace BFCAD::UI {
@@ -13,6 +15,9 @@ namespace BFCAD::UI {
     
     Q_SIGNALS:
         void save_file();
+    
+    public Q_SLOTS:
+        void onShowResultWindow(BooleanFunction *initial_bf, BooleanFunction *optimized_bf);
 
     };
 

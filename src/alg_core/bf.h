@@ -1,5 +1,7 @@
 #pragma once
 
+#include "truth_table.h"
+
 #include <vector>
 #include <memory>
 #include <unordered_map>
@@ -83,7 +85,7 @@ namespace BFCAD {
 
         bool calculate(std::unordered_map<std::string, bool> const& parameters) const;
 
-        std::string get_truth_table() const;
+        std::unique_ptr<TruthTable> get_truth_table() const;
 
         void print_parameters() const;
 

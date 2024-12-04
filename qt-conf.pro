@@ -11,9 +11,10 @@ SOURCES+=$$ANTLR4_GENERTD/*.cpp
 HEADERS+=$$ANTLR4_GENERTD/*.h
 
 ALGC_PATH=src/alg_core
-ALGC_SOURCES=bf quine_opt
+ALGC_SOURCES=bf quine_opt truth_table
 for (src, ALGC_SOURCES): SOURCES += $$ALGC_PATH/$${src}.cpp
 for (src, ALGC_SOURCES): HEADERS += $$ALGC_PATH/$${src}.h
+HEADERS += $$ALGC_PATH/optimizer.h
 
 LGGR_PATH=src/logger
 LGGR_SOURCES=logger
@@ -27,7 +28,7 @@ for (src, CMMN_SOURCES): HEADERS += $$CMMN_PATH/$${src}.h
 HEADERS += $$CMMN_PATH/formatter.h
 
 GUI_PATH=src/gui
-GUI_SOURCES=bfc_gui bfc_frame_container frames/editor frames/output_panel frames/side_panel
+GUI_SOURCES=bfc_gui bfc_frame_container frames/editor frames/output_panel frames/side_panel result_window
 for (src, GUI_SOURCES): SOURCES += $$GUI_PATH/$${src}.cpp
 for (src, GUI_SOURCES): HEADERS += $$GUI_PATH/$${src}.h
 

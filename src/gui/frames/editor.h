@@ -1,5 +1,7 @@
 #pragma once
 
+#include "bf.h"
+
 #include <QFrame>
 #include <QWidget>
 #include <QTextEdit>
@@ -42,6 +44,9 @@ namespace BFCAD::UI {
             void onTextChanged();
             void saveFile();
             void optimize();
+        
+        Q_SIGNALS:
+            void showResultWindow(BooleanFunction *initial_bf, BooleanFunction *optimized_bf);
 
     };
 

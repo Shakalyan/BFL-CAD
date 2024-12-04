@@ -11,7 +11,7 @@ namespace BFCAD {
 
     public:
         
-        std::unique_ptr<BooleanFunction> optimize(std::unique_ptr<BooleanFunction> bf) override;
+        std::unique_ptr<BooleanFunction> optimize(BooleanFunction *bf) override;
 
     };
 

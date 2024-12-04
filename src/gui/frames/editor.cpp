@@ -168,20 +168,24 @@ void BFCAD::UI::Editor::optimize()
 
     BFLTranslator translator;
     try {
-        std::unique_ptr<BooleanFunction> bf = translator.translate(this->current_tab->file_content.toStdString());
+        std::unique_ptr<BooleanFunction> initial_bf = translator.translate(this->current_tab->file_content.toStdString());
         Logger::log("Initial BF:");
-        Logger::log(bf->to_string());
+        Logger::log(initial_bf->to_string());
 
         Logger::log("Initial BF's truth table:");
-        Logger::log(bf->get_truth_table());
+        std::unique_ptr<TruthTable> initial_bf_tt = initial_bf->get_truth_table();
+        Logger::log(initial_bf_tt->to_string());
         
         IOptimizer&& optimizer = QuineOpt();
-        std::unique_ptr<BooleanFunction> optimized_bf = optimizer.optimize(std::move(bf));
+        std::unique_ptr<BooleanFunction> optimized_bf = optimizer.optimize(initial_bf.get());
         Logger::log("Optimized BF:");
         Logger::log(optimized_bf->to_string());
 
         Logger::log("Optimized BF's truth table:");
-        Logger::log(optimized_bf->get_truth_table());
+        std::unique_ptr<TruthTable> optimized_bf_tt = optimized_bf->get_truth_table();
+        Logger::log(optimized_bf_tt->to_string());
+
+        Q_EMIT showResultWindow(initial_bf.release(), optimized_bf.release());
     }
     catch (BFLTException &e) {
         Logger::log(format("EXCEPTION: %", e.what()));

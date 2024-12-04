@@ -194,7 +194,7 @@ BFCAD::DNF BFCAD::QuineOpt::get_minimal_DNF(BFCAD::DNF const& canonical_DNF, BFC
     return minimal_dnf;
 }
 
-std::unique_ptr<BFCAD::BooleanFunction> BFCAD::QuineOpt::optimize(std::unique_ptr<BFCAD::BooleanFunction> bf)
+std::unique_ptr<BFCAD::BooleanFunction> BFCAD::QuineOpt::optimize(BooleanFunction *bf)
 {
     DNF cdnf = bf->get_canonical_DNF();
     //BFCAD::Logger::log(cdnf.toString());

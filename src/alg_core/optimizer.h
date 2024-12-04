@@ -8,7 +8,7 @@ namespace BFCAD {
     class IOptimizer {
     public:
 
-        virtual std::unique_ptr<BooleanFunction> optimize(std::unique_ptr<BooleanFunction> bf) = 0; 
+        virtual std::unique_ptr<BooleanFunction> optimize(BooleanFunction *bf) = 0; 
 
     };
 

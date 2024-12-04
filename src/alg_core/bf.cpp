@@ -25,7 +25,7 @@ std::string BFCAD::Conjunct::toString() const
             res.append("!");
         res.append(mmb.first);
     }
-    return std::move(res);
+    return res;
 }
 
 BFCAD::Conjunct::Conjunct()
@@ -52,7 +52,7 @@ std::string BFCAD::DNF::toString() const
         if (i != conj_num-1)
             res.append(" || ");
     }
-    return std::move(res);
+    return res;
 }
 
 bool BFCAD::DNF::addConjunct(Conjunct const& conjunct)
@@ -168,34 +168,36 @@ bool BFCAD::BooleanFunction::calculate(std::unordered_map<std::string, bool> con
     return 0;
 }
 
-std::string BFCAD::BooleanFunction::get_truth_table() const
+std::unique_ptr<BFCAD::TruthTable> BFCAD::BooleanFunction::get_truth_table() const
 {
-    std::string result;
-    std::unordered_map<std::string, bool> params;
+    int columns = this->parameters.size() + 1;
+    int rows = (1 << (columns-1));
+    std::unique_ptr<TruthTable> truth_table = std::make_unique<TruthTable>(rows, columns);
 
+    std::unordered_map<std::string, bool> params;
+    int header_idx = 0;
     for (auto const& param : this->parameters) {
-        result.append("\t" + param);
+        truth_table->headers[header_idx++] = param;
         params.insert(std::make_pair(param, 0));
     }
-    result.append("\tresult");
+    truth_table->headers[header_idx] = "result";    
 
-    int limit = (1<<this->parameters.size());
-    for (int i = 0; i < limit; ++i) {
-        result.append("\n");
-
-        int param_idx = this->parameters.size()-1;
+    for (int i = 0; i < rows; ++i) {
+        int ofs = this->parameters.size()-1;
+        int col = 0;
         for (auto it = this->parameters.begin(); it != this->parameters.end(); ++it) {
-            bool value = i & 1<<param_idx;
+            bool value = i & 1<<ofs;
             params[*it] = value;
-            --param_idx;
-            result.append("\t").append(std::to_string(value));
+            truth_table->table[i][col] = value;
+            --ofs;
+            ++col;
         }
 
         bool bf_result = this->calculate(params);
-        result.append("\t").append(std::to_string(bf_result));
+        truth_table->table[i][columns-1] = bf_result;
     }
 
-    return result;
+    return truth_table;
 }
 
 void BFCAD::BooleanFunction::print_parameters() const
@@ -228,7 +230,7 @@ BFCAD::DNF BFCAD::BooleanFunction::get_canonical_DNF() const
         }
     }
 
-    return std::move(dnf);
+    return dnf;
 }
 
 std::string BFCAD::BooleanFunction::to_string() const

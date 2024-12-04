@@ -1,6 +1,9 @@
 #include "bfc_gui.h"
 
 #include "bfc_frame_container.h"
+#include "result_window.h"//-----------------------
+#include "logger.h"
+
 #include <QFrame>
 #include <QSplitter>
 #include <QMenu>
@@ -48,4 +51,14 @@ BFCAD::UI::BfcGui::BfcGui(QWidget *parent) : QMainWindow(parent)
     connect(open_file_act, &QAction::triggered, frame_container->editor, &Editor::searchFile);
     connect(save_act, &QAction::triggered, frame_container->editor, &Editor::saveFile);
     connect(optimize_act, &QAction::triggered, frame_container->editor, &Editor::optimize);
+    connect(frame_container->editor, &Editor::showResultWindow, this, &BfcGui::onShowResultWindow);
+}
+
+void BFCAD::UI::BfcGui::onShowResultWindow(BooleanFunction *ibf, BooleanFunction *obf)
+{
+    std::unique_ptr<BooleanFunction> initial_bf(ibf);
+    std::unique_ptr<BooleanFunction> optimized_bf(obf);
+    ResultWindow *rw = new ResultWindow(std::move(initial_bf), std::move(optimized_bf), this);
+    rw->adjustSize();
+    rw->show();
 }
