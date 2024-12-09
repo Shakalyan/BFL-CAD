@@ -20,7 +20,13 @@ BFCAD::UI::BfcGui::BfcGui(QWidget *parent) : QMainWindow(parent)
 {
     // menu
     QAction *quit = new QAction("Quit", this);
+    quit->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_Q));
+
+    QAction *new_file_act = new QAction("New file");
+    new_file_act->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_N));
+
     QMenu *file = menuBar()->addMenu("File");
+    file->addAction(new_file_act);
     file->addAction(quit);
     connect(quit, &QAction::triggered, qApp, QApplication::quit);
 
@@ -52,6 +58,7 @@ BFCAD::UI::BfcGui::BfcGui(QWidget *parent) : QMainWindow(parent)
     connect(save_act, &QAction::triggered, frame_container->editor, &Editor::saveFile);
     connect(optimize_act, &QAction::triggered, frame_container->editor, &Editor::optimize);
     connect(frame_container->editor, &Editor::showResultWindow, this, &BfcGui::onShowResultWindow);
+    connect(new_file_act, &QAction::triggered, frame_container->editor, &Editor::newFile);
 }
 
 void BFCAD::UI::BfcGui::onShowResultWindow(BooleanFunction *ibf, BooleanFunction *obf)

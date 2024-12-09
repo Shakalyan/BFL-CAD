@@ -9,6 +9,9 @@
 #include <QVBoxLayout>
 #include <QSplitter>
 #include <QLabel>
+#include <QAction>
+#include <QPixmap>
+#include <QToolBar>
 
 BFCAD::UI::BFInfoFrame::BFInfoFrame(std::unique_ptr<BooleanFunction> bf, QWidget *parent) : QFrame(parent)
 {
@@ -26,22 +29,6 @@ BFCAD::UI::BFInfoFrame::BFInfoFrame(std::unique_ptr<BooleanFunction> bf, QWidget
             truth_table_model->setItem(r, c, new QStandardItem(value));
         }
     }
-    // truth_table_model->setItem(0, 0, new QStandardItem("0"));
-    // truth_table_model->setItem(0, 1, new QStandardItem("0"));
-    // truth_table_model->setItem(0, 2, new QStandardItem("1"));
-    // truth_table_model->setItem(1, 0, new QStandardItem("0"));
-    // truth_table_model->setItem(1, 1, new QStandardItem("1"));
-    // truth_table_model->setItem(1, 2, new QStandardItem("0"));
-    // truth_table_model->setItem(2, 0, new QStandardItem("0"));
-    // truth_table_model->setItem(2, 1, new QStandardItem("1"));
-    // truth_table_model->setItem(2, 2, new QStandardItem("0"));
-    // truth_table_model->setItem(3, 0, new QStandardItem("0"));
-    // truth_table_model->setItem(3, 1, new QStandardItem("1"));
-    // truth_table_model->setItem(3, 2, new QStandardItem("0"));
-
-    // truth_table_model->setHeaderData(0, Qt::Horizontal, "x1");
-    // truth_table_model->setHeaderData(1, Qt::Horizontal, "x2");
-    // truth_table_model->setHeaderData(2, Qt::Horizontal, "Result asdfasdfj;alsdkfj;alksjdf;lakjsd;flkjas;lkdjf;alksjdf;laksjdf;lasjdf;lkajsdfl;kjasd;lfkjasl;kdfjasl;kdjf");
 
     QTableView *view = new QTableView(this);
     view->setModel(truth_table_model);
@@ -54,7 +41,6 @@ BFCAD::UI::BFInfoFrame::BFInfoFrame(std::unique_ptr<BooleanFunction> bf, QWidget
     layout->addWidget(view);
     layout->setStretchFactor(bf_repr, 0);
     layout->setStretchFactor(view, 1);
-    //layout->setContentsMargins(5, 5, 5, 5);
 
     setLayout(layout);
     Logger::log("end creating bf info frame");
@@ -70,6 +56,12 @@ BFCAD::UI::ResultWindow::ResultWindow(std::unique_ptr<BooleanFunction> initial_b
     QSplitter *horizontal_splitter = new QSplitter(Qt::Horizontal, this);
     horizontal_splitter->addWidget(bf_info);
     horizontal_splitter->addWidget(bf_info2);
+
+    QPixmap exportpix("media/export.png");
+    QAction *export_act = new QAction(exportpix, "Export", this);
+
+    QToolBar *toolbar = addToolBar("result window toolbar");
+    toolbar->addAction(export_act);
     
     setCentralWidget(horizontal_splitter);    
 }

@@ -44,6 +44,7 @@ namespace BFCAD::UI {
             void onTextChanged();
             void saveFile();
             void optimize();
+            void newFile();
         
         Q_SIGNALS:
             void showResultWindow(BooleanFunction *initial_bf, BooleanFunction *optimized_bf);

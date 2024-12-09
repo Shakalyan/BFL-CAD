@@ -15,20 +15,23 @@
 #include <QFileDialog>
 #include <iostream>
 
-BFCAD::UI::FileTab::FileTab(QString const& file_path)
+static QString readFile(QString const& file_path)
 {
-    this->file_path = file_path;
-    this->file_name = QFileInfo(file_path).fileName();
-    this->unsaved = false;
-
     QFile file(file_path);
     QFileInfo file_info(file_path);
     file.open(QIODevice::ReadOnly);
     QTextStream in(&file);
     QString file_data(in.readAll());
     file.close();
+    return file_data;
+}
 
-    this->file_content = std::move(file_data);
+BFCAD::UI::FileTab::FileTab(QString const& file_path)
+{
+    this->file_path = file_path;
+    this->file_name = QFileInfo(file_path).fileName();
+    this->unsaved = false;
+    this->file_content = readFile(file_path);
 }
 
 bool BFCAD::UI::FileTab::operator==(FileTab const& file_tab) const
@@ -80,6 +83,11 @@ void BFCAD::UI::Editor::openFile(QString const& file_path)
     if (!tab) {
         tab = new FileTab(file_path);
         this->tabs->addTab(tab, tab->file_name);
+    } else {
+        tab->file_content = readFile(file_path);
+        tab->unsaved = false;
+        this->tabs->setTabText(this->tabs->indexOf(tab), tab->file_name);
+        this->set_text_blocked(tab->file_content);
     }
     this->tabs->setCurrentWidget(tab);
 }
@@ -118,7 +126,10 @@ void BFCAD::UI::Editor::closeFile(int tab_index)
 
 void BFCAD::UI::Editor::searchFile()
 {
-    QString chosen_file_path = QFileDialog::getOpenFileName(this, "Choose file", QDir::currentPath(), "*.bfl");
+    QString chosen_file_path = QFileDialog::getOpenFileName(this, 
+                                                            "Choose file", 
+                                                            QDir::currentPath(), 
+                                                            "BFL (*.bfl);;All (*)");
     if (!chosen_file_path.isEmpty())
         this->openFile(chosen_file_path);
 }
@@ -149,6 +160,19 @@ void BFCAD::UI::Editor::saveFile()
         this->tabs->setTabText(tab_index, this->current_tab->file_name);
         this->current_tab->unsaved = false;
     }
+}
+
+void BFCAD::UI::Editor::newFile()
+{
+    QString file_path = QFileDialog::getSaveFileName(this, "Save file", QDir::currentPath());
+    if (file_path.isEmpty())
+        return;
+    
+    BFCAD::Logger::log(file_path.toStdString());
+    QFile file(file_path);
+    file.open(QIODevice::ReadWrite | QIODevice::Truncate);
+    file.close();
+    this->openFile(file_path);
 }
 
 void BFCAD::UI::Editor::set_text_blocked(QString const& text)
