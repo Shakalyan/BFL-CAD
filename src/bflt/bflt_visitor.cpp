@@ -6,8 +6,17 @@
 std::any BFCAD::BFLTVisitor::visitProg(BFLParser::ProgContext *ctx) 
 {
     BFCAD::Logger::log("============ start parsing BFL input ============");
-    visitChildren(ctx);
+    try {
+        visitChildren(ctx);
+    } catch (std::exception &e) {
+        throw BFCAD::BFLTException(BFCAD::BFLTExceptionType::STD_EXCEPTION,
+                                   e.what());
+    }
     BFCAD::Logger::log("============= end parsing BFL input =============");
+    if (!this->res_bf) {
+        throw BFCAD::BFLTException(BFCAD::BFLTExceptionType::BF_IS_NOT_PRESENT,
+                                   "boolean function is not present");
+    }
     return this->res_bf;
 }
 
@@ -32,7 +41,13 @@ std::any BFCAD::BFLTVisitor::visitAssign(BFLParser::AssignContext *ctx)
 {
     std::string id = ctx->ID()[0].getText();
     BFCAD::Logger::log(BFCAD::format("visit assign: %", id));
+    if (!ctx->expr() || ctx->expr()->children.size() == 0) {
+        throw BFCAD::BFLTException(BFCAD::BFLTExceptionType::EMPTY_ASSIGN_VALUE,
+                                   BFCAD::format("assign value for % is empty", id));
+    }
+
     if (id == out_id) {
+        std::cout << ctx->expr()->children.size() << std::endl;
         res_bf = std::any_cast<BFCAD::BooleanFunction*>(visit(ctx->expr()));
         return 0;
     }

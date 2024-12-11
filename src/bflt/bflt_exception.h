@@ -6,7 +6,10 @@ namespace BFCAD {
 
     enum class BFLTExceptionType {
         INS_ID_ASSIGN,
-        ID_NOT_FOUND
+        ID_NOT_FOUND,
+        BF_IS_NOT_PRESENT,
+        EMPTY_ASSIGN_VALUE,
+        STD_EXCEPTION
     };
 
     class BFLTException {
