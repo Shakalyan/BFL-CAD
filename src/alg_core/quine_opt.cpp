@@ -25,7 +25,7 @@ static BFCAD::Conjunct merge(BFCAD::Conjunct const& conj1, BFCAD::Conjunct const
         }
     }
 
-    return std::move(res);
+    return res;
 }
 
 static bool is_overlapping(BFCAD::Conjunct const& implicant, BFCAD::Conjunct const& conjunct)
@@ -45,8 +45,8 @@ static bool reduce_DNF(BFCAD::DNF const& dnf, BFCAD::DNF &reduced_dnf)
     size_t dnf_size = dnf.conjuncts.size();
     std::vector<bool> merged(dnf_size);
 
-    for (int l = 0; l < dnf_size; ++l) {
-        for (int r = l+1; r < dnf_size; ++r) {
+    for (size_t l = 0; l < dnf_size; ++l) {
+        for (size_t r = l+1; r < dnf_size; ++r) {
             BFCAD::Conjunct merged_conj = merge(dnf.conjuncts[l], dnf.conjuncts[r]);
             if (merged_conj.members.size()) {
                 merged[l] = true;
@@ -73,7 +73,7 @@ BFCAD::DNF BFCAD::QuineOpt::get_reduced_DNF(BFCAD::DNF const& canonical_DNF) con
         dnf = reduced_dnf;
         reduced_dnf.conjuncts.clear();
     }
-    return std::move(reduced_dnf);
+    return reduced_dnf;
 }
 
 BFCAD::DNF BFCAD::QuineOpt::get_minimal_DNF(BFCAD::DNF const& canonical_DNF, BFCAD::DNF const& reduced_dnf) const
@@ -84,20 +84,18 @@ BFCAD::DNF BFCAD::QuineOpt::get_minimal_DNF(BFCAD::DNF const& canonical_DNF, BFC
 
     // build implicant matrix
     std::vector<std::vector<bool>> implicant_mx;
-    for (int impl_i = 0; impl_i < rdnf_impl_num; ++impl_i) {
+    for (size_t impl_i = 0; impl_i < rdnf_impl_num; ++impl_i) {
         implicant_mx.push_back(std::vector<bool>(cdnf_conj_num));
-        for (int conj_i = 0; conj_i < cdnf_conj_num; ++conj_i) {
+        for (size_t conj_i = 0; conj_i < cdnf_conj_num; ++conj_i) {
             implicant_mx[impl_i][conj_i] = is_overlapping(reduced_dnf.conjuncts[impl_i], canonical_DNF.conjuncts[conj_i]);
-            //std::cout << "\t" << implicant_mx[impl_i][conj_i];
         }
-        //std::cout << "\n";
     }
 
     // find core implicants
     std::vector<bool> core_impl(rdnf_impl_num);
-    for (int conj_i = 0; conj_i < cdnf_conj_num; ++conj_i) {
+    for (size_t conj_i = 0; conj_i < cdnf_conj_num; ++conj_i) {
         int overlapped_impl_idx = -1;
-        for (int impl_i = 0; impl_i < rdnf_impl_num; ++impl_i) {
+        for (size_t impl_i = 0; impl_i < rdnf_impl_num; ++impl_i) {
             if (implicant_mx[impl_i][conj_i]) {
                 if (overlapped_impl_idx != -1) {
                     overlapped_impl_idx = -1;
@@ -112,9 +110,9 @@ BFCAD::DNF BFCAD::QuineOpt::get_minimal_DNF(BFCAD::DNF const& canonical_DNF, BFC
 
     // find not overlapped conjunct indices
     std::vector<int> not_overlapped_conjs_idxs;
-    for (int conj_i = 0; conj_i < cdnf_conj_num; ++conj_i) {
+    for (size_t conj_i = 0; conj_i < cdnf_conj_num; ++conj_i) {
         bool overlapped = false;
-        for (int impl_i = 0; impl_i < rdnf_impl_num; ++impl_i) {
+        for (size_t impl_i = 0; impl_i < rdnf_impl_num; ++impl_i) {
             if (core_impl[impl_i] && implicant_mx[impl_i][conj_i]) {
                 overlapped = true;
                 break;
@@ -128,7 +126,7 @@ BFCAD::DNF BFCAD::QuineOpt::get_minimal_DNF(BFCAD::DNF const& canonical_DNF, BFC
 
     // find not core implicants indices
     std::vector<int> not_core_impls_idxs;
-    for (int i = 0; i < rdnf_impl_num; ++i) {
+    for (size_t i = 0; i < rdnf_impl_num; ++i) {
         if (!core_impl[i])
             not_core_impls_idxs.push_back(i);
     }
@@ -146,7 +144,7 @@ BFCAD::DNF BFCAD::QuineOpt::get_minimal_DNF(BFCAD::DNF const& canonical_DNF, BFC
     for (int bm = 0; bm < limit; ++bm) {
         size_t conjs_size = 0;
         std::vector<bool> used_impls(nc_impls_num);
-        for (int i = 0; i < nc_impls_num; ++i) {
+        for (size_t i = 0; i < nc_impls_num; ++i) {
             used_impls[i] = static_cast<bool>(bm & 1<<i);
             if (used_impls[i])
                 conjs_size += reduced_dnf.conjuncts[not_core_impls_idxs[i]].size();
@@ -156,8 +154,8 @@ BFCAD::DNF BFCAD::QuineOpt::get_minimal_DNF(BFCAD::DNF const& canonical_DNF, BFC
             continue;
 
         std::vector<bool> overlapped_conjs(no_conjs_num);
-        for (int conj_idx = 0; conj_idx < no_conjs_num; ++conj_idx) {
-            for (int impl_idx = 0; impl_idx < nc_impls_num; ++impl_idx) {
+        for (size_t conj_idx = 0; conj_idx < no_conjs_num; ++conj_idx) {
+            for (size_t impl_idx = 0; impl_idx < nc_impls_num; ++impl_idx) {
                 if (used_impls[impl_idx] && implicant_mx[not_core_impls_idxs[impl_idx]][not_overlapped_conjs_idxs[conj_idx]]) {
                     overlapped_conjs[conj_idx] = true;
                     break;
@@ -175,14 +173,14 @@ BFCAD::DNF BFCAD::QuineOpt::get_minimal_DNF(BFCAD::DNF const& canonical_DNF, BFC
         if (overlapped_all) {
             optimal_conjuncts.clear();
             minimal_conjs_size = conjs_size;
-            for (int i = 0; i < nc_impls_num; ++i) {
+            for (size_t i = 0; i < nc_impls_num; ++i) {
                 if (used_impls[i])
                     optimal_conjuncts.push_back(reduced_dnf.conjuncts[not_core_impls_idxs[i]]);
             }
         }
     }
 
-    for (int i = 0; i < rdnf_impl_num; ++i) {
+    for (size_t i = 0; i < rdnf_impl_num; ++i) {
         if (core_impl[i])
             minimal_dnf.addConjunct(reduced_dnf.conjuncts[i]);
     }

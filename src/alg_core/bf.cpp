@@ -47,7 +47,7 @@ std::string BFCAD::DNF::toString() const
 {
     std::string res;
     size_t conj_num = this->conjuncts.size();
-    for (int i = 0; i < conj_num; ++i) {
+    for (size_t i = 0; i < conj_num; ++i) {
         res.append(this->conjuncts[i].toString());
         if (i != conj_num-1)
             res.append(" || ");
@@ -164,6 +164,8 @@ bool BFCAD::BooleanFunction::calculate(std::unordered_map<std::string, bool> con
             return (left_value || right_value) ^ this->is_inverted;
         case Operation::XOR:
             return (left_value ^ right_value) ^ this->is_inverted;
+        case Operation::NO_OP:
+            return 0;
     }
     return 0;
 }
@@ -263,6 +265,8 @@ std::string BFCAD::BooleanFunction::to_string() const
             break;
         case Operation::XOR:
             result.append(" ^ ");
+            break;
+        case Operation::NO_OP:
             break;
     }
 

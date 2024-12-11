@@ -23,11 +23,10 @@ namespace BFCAD {
         int vargs_idx = 0;
         size_t prev_subs_idx = 0, subs_idx = 0;
         std::string result;
-        auto it = fmt.begin();
 
         while (true) {
             subs_idx = fmt.find('%', prev_subs_idx);
-            if (subs_idx == -1) {
+            if (subs_idx == fmt.npos) {
                 result.append(fmt.substr(prev_subs_idx, fmt.size()-prev_subs_idx));
                 break;
             }
@@ -36,7 +35,7 @@ namespace BFCAD {
             prev_subs_idx = subs_idx+1;
         }
 
-        return std::move(result);
+        return result;
     }
 }
 
