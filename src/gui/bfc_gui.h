@@ -14,7 +14,7 @@ namespace BFCAD::UI {
         BfcGui(QWidget *parent = 0);
     
     Q_SIGNALS:
-        void save_file();
+        void saveFile();
     
     public Q_SLOTS:
         void onShowResultWindow(BooleanFunction *initial_bf, BooleanFunction *optimized_bf);

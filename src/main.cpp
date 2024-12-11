@@ -25,23 +25,5 @@ int main(int argc, char **argv)
     BFCAD::UI::BfcGui gui;
     gui.showMaximized();
 
-    BFCAD::Logger::log("Program start");
-
-    // BFCAD::BFLTranslator translator;
-    // try {
-    //     std::unique_ptr<BFCAD::BooleanFunction> bf = translator.translate(std::cin);
-    //     BFCAD::Logger::log(bf->get_truth_table());
-        
-    //     BFCAD::IOptimizer&& optimizer = BFCAD::QuineOpt();
-    //     std::unique_ptr<BFCAD::BooleanFunction> optimized_bf = optimizer.optimize(std::move(bf));
-    //     BFCAD::Logger::log(optimized_bf->get_truth_table());
-    // }
-    // catch (BFCAD::BFLTException &e) {
-    //     BFCAD::Logger::log(BFCAD::format("EXCEPTION: %", e.what()));
-    // }
-
-
-    // BFCAD::Logger::log("Program end");
-
     return app.exec();
 }
